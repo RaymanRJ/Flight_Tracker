@@ -1,5 +1,13 @@
 # Flight Tracker
 
-A simple script to announce the status and arrival time of a flight. Built to run on Ubuntu as a cronjob.
+This script is designed to run as a cronjob on Ubuntu, with the
+flight number  passed as a command-line argument.
 
-Requires that the flight number be passed as a command-line parameter.
+Flights are retrieved from https://www.flightaware.com using a Chrome
+browser on Selenium. This introduces some instability however, as this
+system will probably not work if any changes are made to that website.
+
+Selenium is used to avoid the need of signing up for an API key to search
+for flight times. As most websites are created through JavaScript,
+Python's request module would not work. Selenium allows JavaScript to run and
+populate the DOM, which can then be parsed after.
