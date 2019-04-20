@@ -43,7 +43,11 @@ time = time_element.find_element_by_tag_name("em")
 # Speak:
 
 engine.say("The flight is " + status.text)
-engine.say("And will arrive at " + time.text)
+engine.say("And will arrive at")
+
+engine.setProperty("rate", 95) # Slow down the time a bit for clarity
+engine.say(time.text)
+
 engine.runAndWait()
 
 # Close browser:
