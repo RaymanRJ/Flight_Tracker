@@ -1,36 +1,59 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-##################################################
-# Flight Tracker
-# Author: Rayman Jamal
-# Date: April 20, 2019
-##################################################
+"""
+Flight Tracker
+Author: Rayman Jamal
+Date: April 20, 2019
+
+This script is designed to run as a cronjob on Ubuntu.
+
+The flight number must be passed as a command-line argument.
+
+"""
 
 from selenium import webdriver
 import pyttsx3
 import sys
 
-# Variables:
-# --- Shell variable:
-flight_number = sys.argv[1] # Passed through command-line
+# region Variables
 
-# --- Script variables:
+# region Shell Variable
+
+flight_number = None
+try:
+    flight_number = sys.argv[1]  # Passed through command-line
+except IndexError:
+    # Hit because no argument was passed
+    print("User must pass a flight number as a command-line argument")
+    print("Example:")
+    print("python3 main.py wg681")
+    quit()
+# endregion
+
+# region Script Variables:
 url = "https://flightaware.com/live/flight/"
-# flight_number = "wg681"
 status_class = "flightPageArrivalDelayStatus"
 arrival_time_class = "flightPageSummaryArrival"
 on_time = "(on time)"
+# endregion
+# endregion
 
-# Init objects:
+# region Initialize Objects:
 
-# --- Speech engine:
+# region Speech Engine:
 engine = pyttsx3.init()
+# endregion
 
-# --- Chrome:
+# region Chrome browser:
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("headless")
 
+print("Looking up flight " + flight_number)
 browser = webdriver.Chrome(options=chrome_options)
+# endregion
+# endregion
+
+# region Main
 
 # Get request:
 browser.get(url + flight_number)
@@ -42,13 +65,21 @@ time = time_element.find_element_by_tag_name("em")
 
 # Speak:
 
-engine.say("The flight is " + status.text)
+flight_status = "The flight is " + status.text
+
+engine.say(flight_status)
 engine.say("And will arrive at")
-
-engine.setProperty("rate", 95) # Slow down the time a bit for clarity
+engine.setProperty("rate", 150)  # Slow down the time a bit for clarity
 engine.say(time.text)
-
 engine.runAndWait()
 
+# Print to console:
+
+print(flight_status)
+print("And will arrive at " + time.text)
+
 # Close browser:
+
 browser.close()
+
+# endregion
